@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="com.ccland.action" extends="json-default">
+		<action name="monitor" class="monitorAction">
+			<result name="success">/Mointor.jsp</result>
+			<result name="input">/Mointor.jsp</result>
+		</action>
+		<action name="upload" class="fileUploadAction">
+			<result name="success">/uploadSuccess.jsp</result>
+			<result name="input">/index.jsp</result>
+			<!--struts2默认只能上传2M文件，类型不限。 配置拦截器来限制上传文件的类型和大小 -->
+			<interceptor-ref name="fileUpload">
+				<!-- 限定文件上传类型 -->
+				<param name="allowedTypes">image/png,image/x-png,image/jpg,image/jpeg,image/pjpeg,image/bmp,image/gif,application/msword,application/octet-stream,text/html,text/htm,application/zip,text/plain,application/excel,application/vnd.ms-excel,application/xml</param>
+				<!-- maximumSize指每个上传文件的大小上限，单位为：byte，这里设为300M，该值不能大于struts.multipart.maxSize总大小 -->
+				<param name="maximumSize">314572800</param>
+			</interceptor-ref>
+			<!-- 默认拦截器栈 -->
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+		
+		<action name="download" class="fileDownloadAction">
+			<result name="success" type="stream">
+				<!-- 默认可下载所有文件类型 -->
+				<param name="contentType">application/octet-stream</param>
+				<!-- 下载流，对应getDownloadStream() -->
+				<param name="inputName">downloadStream</param>
+				<!--动态获取文件名 -->
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<!-- 下载输出流每次输出的大小 -->
+				<param name="bufferSize">4096</param>
+			</result>
+			<param name="downloadDir">E:\UploadFileDemo</param>
+		</action>
+		
+		<action name="delete" class="fileDeleteAction">
+			<result name="deleteFile" type="json"></result>
+		</action>
+	</package>
+</struts>  
